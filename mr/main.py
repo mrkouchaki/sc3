@@ -48,6 +48,18 @@ pos = 0
 RAN_data = None
 rmr_xapp = None
 
+HEADER = 64
+SC_PORT = 8585
+SERVER = socket.gethostbyname(socket.gethostname())
+print(SERVER)
+print(socket.gethostname())
+ADDR = (SERVER, SC_PORT)
+FORMAT = 'UTF-8'
+DISCONNECT_MESSAGE = "!DISCONNECT"
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(ADDR)
+
 class UENotFound(BaseException):
     pass
 class CellNotFound(BaseException):
@@ -176,18 +188,7 @@ def start(thread=False):
   
     use_fake_sdl=False
     rmr_port=4560
-        
-    HEADER = 64
-    SC_PORT = 8585
-    SERVER = socket.gethostbyname(socket.gethostname())
-    print(SERVER)
-    print(socket.gethostname())
-    ADDR = (SERVER, SC_PORT)
-    FORMAT = 'UTF-8'
-    DISCONNECT_MESSAGE = "!DISCONNECT"
-
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(ADDR)
+    
     start_server_listening()
     print("[STARTING] server is start listening...")
     
