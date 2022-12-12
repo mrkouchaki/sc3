@@ -39,19 +39,8 @@ from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.layers import Activation  
 from tensorflow.keras.optimizers import Adam
 
-# from mr import mobile_env
-# from mobile_env.handlers.central import MComCentralHandler
-# from mobile_env.core.base import MComCore
-# from mobile_env.core.entities import BaseStation, UserEquipment
-# from mobile_env.scenarios.small import MComSmall
-
-import redis
-
-# In[ ]:
-
-
-
-
+import socket
+import threading
 
 
 xapp = None
@@ -147,7 +136,29 @@ def connectdb():
     print('df2 = time(df2)=', data2)
     print('df3 = time(df3)=', data3)
     
+def handle_client(conn, addr):
+    print(f"[NEW CONNECTION] {addr} connected.")
+    connected = True
+    while connected:
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+        if msg_length:
+            msg_length = int(msg_length)
+            msg = conn.recv(msg_length).decode(FORMAT)
+            if msg == DISCONNECT_MESSAGE:
+                connected = False
+            print(f"[{addr}] {msg}")
+        conn.send("Msg received".encode(FORMAT))
 
+    conn.close()
+    
+def start_server_listening():
+    server.listen()
+    print(f"[LISTENING] Server is listening on {SERVER}")
+    while True:
+        conn, addr = server.accept()
+        thread = threading.Thread(target=handle_client, args=(conn, addr))
+        thread.start()
+        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 def start(thread=False):
  
@@ -165,6 +176,21 @@ def start(thread=False):
   
     use_fake_sdl=False
     rmr_port=4560
+        
+    HEADER = 64
+    SC_PORT = 8585
+    SERVER = socket.gethostbyname(socket.gethostname())
+    print(SERVER)
+    print(socket.gethostname())
+    ADDR = (SERVER, SC_PORT)
+    FORMAT = 'UTF-8'
+    DISCONNECT_MESSAGE = "!DISCONNECT"
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(ADDR)
+    start_server_listening()
+    print("[STARTING] server is start listening...")
+    
     entry()
     
     #xapp.run()
