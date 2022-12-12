@@ -1,12 +1,12 @@
 {
-        "xapp_name": "sc2",
+        "xapp_name": "sc3",
         "version": "0.0.1",
         "containers": [
             {
-                "name": "sc2",
+                "name": "sc3",
                 "image": {
                     "registry": "xApp-registry.local:5008",
-                    "name": "sc2",
+                    "name": "sc3",
                     "tag": "0.0.1"
                 }
             }
@@ -15,16 +15,16 @@
             "ports": [
                 {
                     "name": "rmr-data",
-                    "container": "sc2",
+                    "container": "sc3",
                     "port": 4560,
                     "txMessages": ["mr_SENT_DATA"],
                     "rxMessages": ["mr_ACK"],
                     "policies": [],
-                    "description": "rmr receive data port for sc2"
+                    "description": "rmr receive data port for sc3"
                 },
                 {
                     "name": "rmr-route",
-                    "container": "sc2",
+                    "container": "sc3",
                     "port": 4561,
                     "description": "rmr route port for sc2"
                 }
