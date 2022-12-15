@@ -151,8 +151,8 @@ def connectdb():
     #data = time(df)
     #print('df2 = time(df)=', data)
                   
-    df2 = pd.DataFrame(db2)
-    df3 = pd.DataFrame(db3)
+    df2 = pd.DataFrame(ue_data_kpimon)
+    df3 = pd.DataFrame(cell_data_kpimon)
     print('df2=', df2)
     print('df3=', df3)
     data2 = time(df2)
