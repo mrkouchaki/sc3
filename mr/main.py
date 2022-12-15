@@ -151,14 +151,14 @@ def connectdb():
     #data = time(df)
     #print('df2 = time(df)=', data)
                   
-    df2 = pd.DataFrame(ue_data_kpimon)
-    df3 = pd.DataFrame(cell_data_kpimon)
-    print('df2=', df2)
-    print('df3=', df3)
-    data2 = time(df2)
-    data3 = time(df3)
-    print('df2 = time(df2)=', data2)
-    print('df3 = time(df3)=', data3)
+    ue_data = pd.DataFrame(ue_data_kpimon)
+    cell_data = pd.DataFrame(cell_data_kpimon)
+    print('ue_data=', ue_data)
+    print('cell_data=', cell_data)
+    ue_data = time(ue_data)
+    cell_data = time(cell_data)
+    print('df2 = time(ue_data)=', ue_data)
+    print('df3 = time(cell_data)=', cell_data)
     
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
