@@ -44,7 +44,7 @@ RUN pip install ricxappframe
 
 RUN python3 -m pip install ricsdl
 
-
+EXPOSE 8585
 
 # Install
 COPY setup.py /tmp
