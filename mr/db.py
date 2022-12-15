@@ -68,7 +68,7 @@ class DATABASE(object):
         print('self.client=', self.client)
 
     def read_data(self, meas, limit=500):
-        print('///////enter def read_data(self, meas, limit=100): in class DATABASE///////////')
+        print('///////enter def read_data(self, meas, limit=500): in class DATABASE///////////')
         """Read data method for a given measurement and limit
         Parameters
         ----------
@@ -164,7 +164,7 @@ class DATABASE2(object):
         print('self.client2=', self.client2)
 
     def read_data(self, meas, limit=500):
-        print('///////enter def read_data(self, meas, limit=100): in class DATABASE///////////')
+        print('///////enter def read_data(self, meas, limit=500): in class DATABASE///////////')
         """Read data method for a given measurement and limit
         Parameters
         ----------
