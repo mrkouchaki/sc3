@@ -6,6 +6,9 @@ import sys
 sys.path.append('.')
 import schedule
 import datetime
+import apscheduler
+from time import sleep
+from apscheduler.schedulers.background import BackgroundScheduler
 from zipfile import ZipFile
 import json
 from os import getenv
@@ -60,6 +63,8 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
+scheduler = BackgroundScheduler()
+
 class UENotFound(BaseException):
     pass
 class CellNotFound(BaseException):
@@ -93,21 +98,28 @@ def default_handler(self, summary, sbuf):
     self.rmr_free(sbuf)
 
 
+# def entry():
+#     print('////////////enter def entry///////////////')
+#     """  Read from DB in an infinite loop and run prediction every second
+#       TODO: do training as needed in the future
+#     """
+#     job = schedule.every(1).seconds.do(start_server_listening, connectdb)
+#     print('/////////pass 1 entry schedule.every(1).seconds.do(connectdb)/////')
+#     connectdb()
+#     #while True:
+#         #print('////while True in entry/////') 
+#         #schedule.run_pending()  
+
 def entry():
-    print('////////////enter def entry///////////////')
-    """  Read from DB in an infinite loop and run prediction every second
-      TODO: do training as needed in the future
-    """
-    job = schedule.every(1).seconds.do(connectdb)
-    print('/////////pass 1 entry schedule.every(1).seconds.do(connectdb)/////')
-    connectdb()
-    #while True:
-        #print('////while True in entry/////') 
-        #schedule.run_pending()        
+    print('////////////enter def entry///////////////')   
+    #scheduler.add_job(id='Scheduled1 task', func=start_server_listening, trigger='interval', seconds=1)
+    scheduler.add_job(id='Scheduled2 task', func=connectdb, trigger='interval', seconds=1)
+    scheduler.start()
+    start_server_listening()
+    print('/////////pass both entry schedule.every(1).seconds.do(connectdb)/////')
+    while True:
+        sleep(1)
         
-
-        
-
 
 def connectdb():
     print('////////////////////enter def connectdb///////////////////')
@@ -189,8 +201,8 @@ def start(thread=False):
     use_fake_sdl=False
     rmr_port=4560
     
-    start_server_listening()
-    print("[STARTING] server is start listening...")
+    #start_server_listening()
+    #print("[STARTING] server is start listening...")
     
     entry()
     
