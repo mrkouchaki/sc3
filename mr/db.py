@@ -18,24 +18,6 @@ class DBCreateDrop:
     def __init__(self, dbname):
         print('enter insert init')
 
-
-# class DATABASE(object):
-#     print('///////////enter class DATABASE(object)////////////////////')
-
-
-#     #host = 'localhost'
-
-#     def __init__(self):    
-#         print('///////enter def __init__ in class DATABASE////////////////')
-
-
-#     def read_data(self):
-#         print('///////enter def read_data(self, meas, limit=100): in class DATABASE///////////')
-      
-
-#     def write_action(self):
-#         print('///////enter def write_lp_prediction(self, df, meas=LP): in class DATABASE///////////')
-
         
 class DATABASE(object):
     print('///////////enter class DATABASE(object)////////////////////')
