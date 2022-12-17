@@ -49,13 +49,13 @@ class DATABASE(object):
         self.client = DataFrameClient(host, port, dbname)
         print('self.client=', self.client)
 
-    def read_data(self, meas, limit=500):
-        print('///////enter def read_data(self, meas, limit=500): in class DATABASE///////////')
+    def read_data(self, meas, limit=2):
+        print('///////enter def read_data(self, meas, limit=2): in class DATABASE///////////')
         """Read data method for a given measurement and limit
         Parameters
         ----------
         meas: str (default='RANMeasReport')
-        limit:int (defualt=500)
+        limit:int (defualt=2)
         """
         #dbname = 'RANData'  ///error: not defined
         #print('dbname=', db) /// error: not defined
@@ -145,13 +145,13 @@ class DATABASE2(object):
         
         print('self.client2=', self.client2)
 
-    def read_data(self, meas, limit=500):
-        print('///////enter def read_data(self, meas, limit=500): in class DATABASE///////////')
+    def read_data(self, meas, limit=2):
+        print('///////enter def read_data(self, meas, limit=2): in class DATABASE///////////')
         """Read data method for a given measurement and limit
         Parameters
         ----------
         meas: str (default='RANMeasReport')
-        limit:int (defualt=500)
+        limit:int (defualt=2)
         """
         #dbname = 'RANData'  ///error: not defined
         #print('dbname=', db) /// error: not defined
