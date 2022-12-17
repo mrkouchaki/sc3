@@ -57,6 +57,7 @@ SERVER = socket.gethostbyname(socket.gethostname())
 print(SERVER)
 print(socket.gethostname())
 ADDR = (SERVER, SC_PORT)
+print('ADDR=', ADDR)
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 
