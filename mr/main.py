@@ -54,8 +54,8 @@ rmr_xapp = None
 HEADER = 64
 SC_PORT = 8585
 SERVER = socket.gethostbyname(socket.gethostname())
-print(SERVER)
-print(socket.gethostname())
+print('SERVER=',SERVER)
+print('socket.gethostname()=',socket.gethostname())
 ADDR = (SERVER, SC_PORT)
 print('ADDR=', ADDR)
 FORMAT = 'UTF-8'
@@ -181,6 +181,8 @@ def start_server_listening():
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        print('in start_srver_func conn=', conn)
+        print('in start_server_function addr=', addr)
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
