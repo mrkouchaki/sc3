@@ -151,7 +151,10 @@ def connectdb():
     #print('df=', df)
     #data = time(df)
     #print('df2 = time(df)=', data)
-                  
+    
+    cell_ue_collection = cell_data_kpimon+ue_data_kpimon
+    print('cell_ue_collection=', cell_ue_collection)
+    
     ue_data = pd.DataFrame(ue_data_kpimon)
     cell_data = pd.DataFrame(cell_data_kpimon)
     print('ue_data=', ue_data)
