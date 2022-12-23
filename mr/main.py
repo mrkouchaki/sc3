@@ -61,8 +61,11 @@ print('ADDR=', ADDR)
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(ADDR)
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(ADDR)
+
+# server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# server.bind(ADDR)
 
 scheduler = BackgroundScheduler()
 
@@ -116,7 +119,7 @@ def entry():
     #scheduler.add_job(id='Scheduled1 task', func=start_server_listening, trigger='interval', seconds=1)
     scheduler.add_job(id='Scheduled2 task', func=connectdb, trigger='interval', seconds=1)
     scheduler.start()
-    start_server_listening()
+    #start_server_listening()
     print('/////////pass both entry schedule.every(1).seconds.do(connectdb)/////')
     while True:
         sleep(1)
@@ -152,8 +155,10 @@ def connectdb():
     #data = time(df)
     #print('df2 = time(df)=', data)
     
-    cell_ue_collection = cell_data_kpimon+ue_data_kpimon
+    cell_ue_collection = ue_data_kpimon + cell_data_kpimon
     print('cell_ue_collection=', cell_ue_collection)
+    cell_ue_collection = json.dumps(cell_ue_collection)
+    send(cell_ue_collection)
     
     ue_data = pd.DataFrame(ue_data_kpimon)
     cell_data = pd.DataFrame(cell_data_kpimon)
@@ -189,7 +194,17 @@ def start_server_listening():
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
-
+        
+def send(msg):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
+    print(client.recv(2048).decode(FORMAT))
+    
+    
 def start(thread=False):
  
     print('////////////////entered Starrrrrrrrrrrt///////////////////')
