@@ -61,11 +61,10 @@ print('ADDR=', ADDR)
 FORMAT = 'UTF-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
-
 # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # server.bind(ADDR)
+
+reg_actor_list = []
 
 scheduler = BackgroundScheduler()
 
@@ -119,8 +118,8 @@ def entry():
     #scheduler.add_job(id='Scheduled1 task', func=start_server_listening, trigger='interval', seconds=1)
     scheduler.add_job(id='Scheduled2 task', func=connectdb, trigger='interval', seconds=1)
     scheduler.start()
-    #start_server_listening()
-    print('/////////pass both entry schedule.every(1).seconds.do(connectdb)/////')
+    start_new_thread(waiting_actor_registration, ())
+    #print('/////////pass both entry schedule.every(1).seconds.do(connectdb)/////')
     while True:
         sleep(1)
         
@@ -148,7 +147,16 @@ def connectdb():
     cell_data_kpimon = db3.data.values.tolist()  # needs to be updated in future when live feed will be coming through KPIMON to influxDB
     print('cell_data_kpimon = db3.data.values.tolist()=', cell_data_kpimon)
     
+    message_sent = {"type": "KPI xApp", "UE Metrics": ue_data_kpimon, "Cell Metrics": cell_data_kpimon}
     
+    data = json.dumps(message_sent)
+    
+    for actor_socket in reg_actor_list:
+        print("sending msg to the actor ....")
+        actor_socket.sendall(bytes(data, encoding="utf-8"))
+        print("Done!")
+        
+        
     #print('msg=', msg)
     #df = pd.DataFrame(msg)
     #print('df=', df)
@@ -158,7 +166,6 @@ def connectdb():
     cell_ue_collection = ue_data_kpimon + cell_data_kpimon
     print('cell_ue_collection=', cell_ue_collection)
     cell_ue_collection = json.dumps(cell_ue_collection)
-    send(cell_ue_collection)
     
     ue_data = pd.DataFrame(ue_data_kpimon)
     cell_data = pd.DataFrame(cell_data_kpimon)
@@ -169,6 +176,7 @@ def connectdb():
     print('df2 = time(ue_data)=', ue_data)
     print('df3 = time(cell_data)=', cell_data)
     
+
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
@@ -177,34 +185,67 @@ def handle_client(conn, addr):
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
+            print(f"[{addr}] {msg}")
             if msg == DISCONNECT_MESSAGE:
                 connected = False
             print(f"[{addr}] {msg}")
-        conn.send("Msg received".encode(FORMAT))
+        #conn.send("Msg received".encode(FORMAT))
+        #conn.send(connectdb())
 
     conn.close()
-    
-def start_server_listening():
-    server.listen()
-    print(f"[LISTENING] Server is listening on {SERVER}")
-    while True:
-        conn, addr = server.accept()
-        print('in start_srver_func conn=', conn)
-        print('in start_server_function addr=', addr)
-        thread = threading.Thread(target=handle_client, args=(conn, addr))
-        thread.start()
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+
+# def start_server_listening():
+#     server.listen()
+#     print(f"[LISTENING] Server is listening on {SERVER}")
+#     while True:
+#         conn, addr = server.accept()
+#         print('in start_srver_func conn=', conn)
+#         print('in start_server_function addr=', addr)
+#         thread = threading.Thread(target=handle_client, args=(conn, addr))
+#         thread.start()
+#         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
         
-def send(msg):
-    message = msg.encode(FORMAT)
-    msg_length = len(message)
-    send_length = str(msg_length).encode(FORMAT)
-    send_length += b' ' * (HEADER - len(send_length))
-    client.send(send_length)
-    client.send(message)
-    print(client.recv(2048).decode(FORMAT))
+# def send(msg):
+#     message = msg.encode(FORMAT)
+#     msg_length = len(message)
+#     send_length = str(msg_length).encode(FORMAT)
+#     send_length += b' ' * (HEADER - len(send_length))
+#     client.send(send_length)
+#     client.send(message)
+#     print(client.recv(2048).decode(FORMAT))
     
+
+def waiting_actor_registration():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(ADDR)
+    s.listen(5)
     
+    while True:
+        actor_socket, addr = s.accept()
+        reg_actor_list.append(actor_socket) 
+        print('Connected to : ' + str(addr[0]) + ':' + str(addr[1]))
+        start_new_thread(waiting_actor_thread, (actor_socket,))
+        
+    s.close()
+    
+def waiting_actor_thread(actor_socket):
+    while True:
+        data = actor_socket.recv(1024)
+        data = data.decode("utf-8")
+        print("<<-- Received message: {}".format(data) + " from the actor")
+        if not data:
+            print("Actor disconnected!")
+            break
+
+        message = json.loads(data, strict=False)
+        #message_handler.handle(actor, message, self)
+
+    # connection closed
+    reg_actor_list.remove_actor(actor_socket)
+    actor_socket.close()
+
+
+
 def start(thread=False):
  
     print('////////////////entered Starrrrrrrrrrrt///////////////////')
