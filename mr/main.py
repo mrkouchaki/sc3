@@ -41,7 +41,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense  
 from tensorflow.keras.layers import Activation  
 from tensorflow.keras.optimizers import Adam
-
+from _thread import *
 import socket
 import threading
 
@@ -119,6 +119,8 @@ def entry():
     scheduler.add_job(id='Scheduled2 task', func=connectdb, trigger='interval', seconds=1)
     scheduler.start()
     start_new_thread(waiting_actor_registration, ())
+    #new_thread = threading.Thread(target=waiting_actor_registration, args=())
+    #new_thread.start()
     #print('/////////pass both entry schedule.every(1).seconds.do(connectdb)/////')
     while True:
         sleep(1)
