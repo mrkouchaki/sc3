@@ -44,6 +44,7 @@ from tensorflow.keras.optimizers import Adam
 from _thread import *
 import socket
 import threading
+import errno
 
 
 xapp = None
@@ -155,8 +156,19 @@ def connectdb():
     
     for actor_socket in reg_actor_list:
         print("sending msg to the actor ....")
-        actor_socket.sendall(bytes(data, encoding="utf-8"))
+        try:
+            actor_socket.sendall(bytes(data, encoding="utf-8"))
+        except socket.error as e:
+            if e.errno != errno.EPIPE:
+                reg_actor_list.remove_actor(actor_socket)
+                print("BrokenPIPI: Actor Disconnected!!")
+            
         print("Done!")
+        
+    #for actor_socket in reg_actor_list:
+        #print("sending msg to the actor ....")
+        #actor_socket.sendall(bytes(data, encoding="utf-8"))
+        #print("Done!")
         
         
     #print('msg=', msg)
@@ -235,7 +247,8 @@ def waiting_actor_thread(actor_socket):
         data = actor_socket.recv(1024)
         data = data.decode("utf-8")
         print("<<-- Received message: {}".format(data) + " from the actor")
-        if not data:
+        #if not data:
+        if len(data) == 0:
             print("Actor disconnected!")
             break
 
