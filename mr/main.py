@@ -132,7 +132,7 @@ def connectdb():
     
     db2 = DATABASE('kpimon')
     print('db2 =  DATABASE(kpimon)=', db2) 
-#     db2.read_data("ricIndication_UeMetrics")
+    #db2.read_data("ricIndication_UeMetrics")
     db2.read_data("ricIndication_UeMetrics")
     print('////came back from db2.DATABASE2-read-data to connectdb.else///////')
     #print('db2.read_data("ueMetrics")=', db2.read_data("ueMetrics"))
@@ -163,9 +163,9 @@ def connectdb():
     #data = time(df)
     #print('df2 = time(df)=', data)
     
-    cell_ue_collection = ue_data_kpimon + cell_data_kpimon
-    print('cell_ue_collection=', cell_ue_collection)
-    cell_ue_collection = json.dumps(cell_ue_collection)
+    #cell_ue_collection = ue_data_kpimon + cell_data_kpimon
+    #print('cell_ue_collection=', cell_ue_collection)
+    #cell_ue_collection = json.dumps(cell_ue_collection)
     
     ue_data = pd.DataFrame(ue_data_kpimon)
     cell_data = pd.DataFrame(cell_data_kpimon)
